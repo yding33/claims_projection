@@ -14,12 +14,12 @@ def expand_grid(x):
         columns=x.keys())
     return new_data_frame
 
-def numEmgergenceMonths(x):
+def numEmergenceMonths(x):
     '''
     Each peril has a specific loss emergence pattern. This function is used to hold the mapping of
     max emgergence months that we consider
     '''
-    peril_emgergence_months ={
+    peril_emgergence_months = {
         'Water' = 12}
     if x in peril_emgergence_months:
         return peril_emgergence_months[x]
