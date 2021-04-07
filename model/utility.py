@@ -61,6 +61,10 @@ class ClaimForecast():
         
         projected_claim_count_acc_month['lag_month'] = projected_claim_count_acc_month['lag_month'].astype(float)
         projected_claim_count_acc_month['report_month'] = pd.to_datetime(projected_claim_count_acc_month['accident_month']) + projected_claim_count_acc_month['lag_month'].apply(lambda x: relativedelta(months=x))
+        month_day_one = datetime.strptime(self.fc_month, '%Y-%m-%d').date().replace(day=1)
+        projected_claim_count_acc_month = projected_claim_count_acc_month[projected_claim_count_acc_month['report_month'].dt.date>=month_day_one]
+        projected_claim_count_acc_month['claim_count_projection'] = (projected_claim_count_acc_month['ultimate_claim_count']*projected_claim_count_acc_month['percent_report_by_lag_month_select'] + 0.6).apply(np.floor)
+        projected_claim_count_report_month = projected_claim_count_acc_month[['report_month', 'claim_count_projection']].groupby(['report_month']).sum('claim_count_projection').reset_index()
 
     def ExecuteReportedClaimsForecast(self):
         new_open_claim_loss_dev_month =
@@ -74,3 +78,5 @@ class ClaimForecast():
 
 sql = historicalReportPattern('2021-03-31', 'Water')
 sql = reportedClaimsByAccMonth('2021-04-06', 'Water', 12)
+test = datetime.strptime('2021-04-03', '%Y-%m-%d').date().replace(day=1)
+
