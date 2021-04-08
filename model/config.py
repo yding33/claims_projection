@@ -1,9 +1,4 @@
 import pandas
-import numpy
-import math
-from datetime import datetime
-from datetime import timedelta
-from dateuntil.relativedelta import relativedelta
 from itertools import product
 
 def expand_grid(x):
@@ -20,9 +15,9 @@ def numEmergenceMonths(x):
     max emgergence months that we consider
     '''
     peril_emgergence_months = {
-        'Water' = 12}
+        'Water': 12}
     if x in peril_emgergence_months:
         return peril_emgergence_months[x]
-    else return 18
+    else: return 18
 
 
