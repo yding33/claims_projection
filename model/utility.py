@@ -86,7 +86,9 @@ class ClaimForecast():
         ##historical reported frequency on non-lagged losses (# of loss from current month)
         sql = reportedClaimWithEE(self.fc_month, self.peril)
         reported_frequency = client.query(sql).to_dataframe()
-        reported_frequency['reported_freq'] = reported_frequency['reported_claims']/reported_frequency['earned_exposure'].astype(
+        reported_frequency['reported_freq_ee'] = reported_frequency['reported_claims']/reported_frequency['earned_exposure'].astype(
+            float)
+        reported_frequency['reported_freq_pif'] = reported_frequency['reported_claims']/reported_frequency['pif'].astype(
             float)
         reported_frequency = reported_frequency.sort_values(by=['report_month'])
         print(reported_frequency)

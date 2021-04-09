@@ -95,6 +95,22 @@ def reportedClaimWithEE(fc_month, peril):
         and date_calendar_month_accounting_basis is not null
     group by 1),
 
+    inforce as(
+    SELECT
+        target_month
+        , sum(number_of_activations + number_of_reinstatements-number_of_terminations-number_of_expirations) as pif
+        FROM dw_prod_extracts.ext_policy_in_force pif
+        where target_month <= date_trunc('{fc_month}', MONTH)
+        group by 1)
+        
+    select 
+    target_month,
+    SUM(pif) OVER (ORDER BY target_month) AS pif
+    from inforce
+    order by 1
+
+    ),
+
     claim as(
         select mon.claim_number
             , claim_count
@@ -120,6 +136,12 @@ def reportedClaimWithEE(fc_month, peril):
         and date_diff(report_month, recoded_loss_date, MONTH) = 0
         group by 1)
         
-        select report_month, coalesce(claim_count,0) as reported_claims, earned_exposure from ee left join claim_report on claim_report.report_month=ee.date_accounting_start
+        select report_month,
+        coalesce(claim_count,0) as reported_claims,
+        earned_exposure,
+        pif
+        from ee
+            left join claim_report on claim_report.report_month = ee.date_accounting_start
+            left join inforce on inforce.target_month = ee.date_accounting_start
         where ee.date_accounting_start < date_trunc('{fc_month}', MONTH)
     '''
