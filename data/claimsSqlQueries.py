@@ -101,14 +101,13 @@ def reportedClaimWithEE(fc_month, peril):
         , sum(number_of_activations + number_of_reinstatements-number_of_terminations-number_of_expirations) as pif
         FROM dw_prod_extracts.ext_policy_in_force pif
         where target_month <= date_trunc('{fc_month}', MONTH)
-        group by 1)
+        group by 1),
         
-    select 
+    policy_if as (select 
     target_month,
     SUM(pif) OVER (ORDER BY target_month) AS pif
     from inforce
     order by 1
-
     ),
 
     claim as(
@@ -142,6 +141,6 @@ def reportedClaimWithEE(fc_month, peril):
         pif
         from ee
             left join claim_report on claim_report.report_month = ee.date_accounting_start
-            left join inforce on inforce.target_month = ee.date_accounting_start
+            left join policy_if on policy_if.target_month = ee.date_accounting_start
         where ee.date_accounting_start < date_trunc('{fc_month}', MONTH)
     '''
