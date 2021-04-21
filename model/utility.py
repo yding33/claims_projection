@@ -21,7 +21,6 @@ class ClaimForecast():
         self.client = bigquery.Client()
 
     def ReportingPattern(self):
-        
         sql = historicalReportPattern(
             self.fc_month, self.peril)
         report_pattern = self.client.query(sql).to_dataframe()
@@ -129,6 +128,7 @@ class ClaimForecast():
         final_freq_projection.to_csv(os.path.dirname(os.path.dirname(
             os.path.realpath(__file__))) + f'/output/final_freq_projection ' + self.fc_month + '.csv', index=False)
 
-
-        
+    def projectSeverityFromLR(self):
+        ## ingest in accident month loss ratio and calculate severity
+        return x
 
